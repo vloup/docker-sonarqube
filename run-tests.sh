@@ -118,6 +118,21 @@ for image in "${images[@]}"; do
     else
         results+=("failure")
     fi
+
+    for arg; do
+        if [[ $arg == "--snyk" ]]; then
+            info "Finding vulnerabilities with Snyk..."
+            info "I'm in $PWD/$image"
+
+            docker run -it \
+              -e "SNYK_TOKEN=MY_TOKEN" \
+              -e "USER_ID=1234" \
+              -e "MONITOR=true" \
+              -v "$PWD/$image:/project" \
+              -v "/var/run/docker.sock:/var/run/docker.sock" \
+              snyk/snyk-cli:docker test --docker "$name" --file="$image/Dockerfile"
+        fi
+    done
 done
 
 echo
