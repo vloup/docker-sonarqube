@@ -13,7 +13,7 @@ ENV SONAR_VERSION=7.9.1 \
 # Http port
 EXPOSE 9000
 
-RUN groupadd -r sonarqube && useradd -r -g sonarqube sonarqube
+RUN useradd -r -g root sonarqube
 
 # pub   2048R/D26468DE 2015-05-25
 #       Key fingerprint = F118 2E81 C792 9289 21DB  CAB4 CFCA 4A29 D264 68DE
@@ -34,7 +34,8 @@ RUN set -x \
     && gpg --batch --verify sonarqube.zip.asc sonarqube.zip \
     && unzip -q sonarqube.zip \
     && mv sonarqube-$SONAR_VERSION sonarqube \
-    && chown -R sonarqube:sonarqube sonarqube \
+    && chown -R sonarqube:root sonarqube \
+    && chmod -R g+w sonarqube \
     && rm sonarqube.zip* \
     && rm -rf $SONARQUBE_HOME/bin/*
 
